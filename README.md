@@ -72,7 +72,7 @@ Cenário otimizado em Ruby. Servindo o conteúdo diretamente do Redis para verif
 ### Comparativo Geral
 Além das visualizações por cenário, compilamos as informações gerais nos gráficos abaixo. Note que devido à alta discrepância entre as linguagens sem cache vs com cache, o gráfico de tempo de resposta possui **escala logarítmica**.
 
-![Comparativo P95](graficos%20gerados/grafico%20geral/grafico_p95_comparativo.png)  
+![Comparativo P95](desempenho_geral.png)  
 ![Taxa de Erros](graficos%20gerados/grafico%20geral/grafico_taxa_erros.png)
 
 ---
