@@ -97,7 +97,7 @@ Cenário onde o Redis foi ativado. As requisições são servidas em milissegund
 ### 3. API em Ruby (Sinatra) SEM Cache
 Cenário base para avaliar a resiliência do servidor WEBrick/Sinatra sob altas conexões para extração "ao vivo", sem auxílio de cache.
 * Comportamento das Barras: Apresenta um crescimento conforme a carga de usuários aumenta.
-* Impacto da Carga Máxima: Com 210 usuários, o tempo máximo de resposta atinge cerca de 4.600 milissegundos (4,6 segundos).
+* Impacto da Carga Máxima: Com 210 usuários, o tempo máximo de resposta atinge cerca de 7.900 milissegundos (7 segundos).
 ![Desempenho Ruby Sem Cache](graficos%20gerados/grafico%20cenarios/ruby%20sem%20cache/grafico_desempenho_ruby_sem_cache.png)
 
 * Revela o ponto de ruptura da aplicação. À medida que a carga sobe para 210 usuários, a taxa de erros cresce devido a bloqueios de anti-bot dos sites alvo e estouro de buffers de conexão.
