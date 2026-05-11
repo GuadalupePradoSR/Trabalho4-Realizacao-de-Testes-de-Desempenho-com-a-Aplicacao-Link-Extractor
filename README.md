@@ -100,6 +100,39 @@ Cenário otimizado em Ruby. Servindo o conteúdo diretamente do Redis para verif
 
 ---
 
+## 🛠️ Modificação do Código Original (Cenário: Ruby SEM Cache)
+Para garantir a rigorosidade e a veracidade arquitetural do cenário **API em Ruby (Sinatra) SEM Cache**, foi necessário realizar modificações diretas no código-fonte do repositório base fornecido em [ibnesayeed/linkextractor](https://github.com/ibnesayeed/linkextractor) (especificamente os arquivos da pasta `step6`).
+
+Por padrão, a versão Ruby do Link Extractor implementa a conexão obrigatória com o Redis. Para desativar o cache de forma efetiva e forçar a API a realizar a raspagem (scraping) na internet em 100% das requisições, as seguintes alterações foram aplicadas:
+
+### 1. Desativação da Lógica de Cache (`api/linkextractor.rb`)
+As funções de busca (`redis.get`) e gravação (`redis.set`) foram inibidas no código, forçando a variável `jsonlinks` a receber o processamento direto da função `extract_links`.
+
+```ruby
+get "/api/*" do
+  url = [params['splat'].first, request.query_string].reject(&:empty?).join("?")
+  cache_status = "MISS" # Forçado para MISS para o log
+  
+  # A extração ocorre em tempo real, ignorando o banco
+  jsonlinks = JSON.pretty_generate(extract_links(url))
+  
+  # AS LINHAS ABAIXO FORAM COMENTADAS/REMOVIDAS:
+  # jsonlinks = redis.get(url)
+  # if jsonlinks.nil?
+  #   cache_status = "MISS"
+  #   jsonlinks = JSON.pretty_generate(extract_links(url))
+  #   redis.set(url, jsonlinks)
+  # end
+
+  cache_log.puts "#{Time.now.to_i}\t#{cache_status}\t#{url}"
+  status 200
+  headers "content-type" => "application/json"
+  body jsonlinks
+end
+```
+
+---
+
 ### 📈 Comparativo Geral
 Além das visualizações por cenário, compilamos as informações gerais nos gráficos abaixo. Note que devido à alta discrepância entre as linguagens sem cache vs com cache, o gráfico de tempo de resposta possui **escala logarítmica**.
 
