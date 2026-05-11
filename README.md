@@ -100,7 +100,7 @@ Cenário base para avaliar a resiliência do servidor WEBrick/Sinatra sob altas 
 * Impacto da Carga Máxima: Com 210 usuários, o tempo máximo de resposta atinge cerca de 7.900 milissegundos (7 segundos).
 ![Desempenho Ruby Sem Cache](graficos%20gerados/grafico%20cenarios/ruby%20sem%20cache/grafico_desempenho_ruby_sem_cache.png)
 
-* Revela o ponto de ruptura da aplicação. À medida que a carga sobe para 210 usuários, a taxa de erros cresce devido a bloqueios de anti-bot dos sites alvo e estouro de buffers de conexão.
+** Revela o ponto de ruptura da aplicação. À medida que a carga sobe para 210 usuários, a taxa de erros cresce devido a bloqueios de anti-bot dos sites alvo e estouro de buffers de conexão.
 ![Erro Ruby Sem Cache](graficos%20gerados/grafico%20cenarios/ruby%20sem%20cache/grafico_erro_ruby_sem_cache.png)
 
 ### 4. API em Ruby (Sinatra) COM Cache (Redis)
@@ -168,10 +168,17 @@ services:
 ---
 
 ### Comparativo Geral
-Além das visualizações por cenário, compilamos as informações gerais nos gráficos abaixo. Note que devido à alta discrepância entre as linguagens sem cache vs com cache, o gráfico de tempo de resposta possui **escala logarítmica**.
+
+** Sem Cache: Sob carga máxima (210 usuários), a dependência da rede externa afeta drasticamente o desempenho. O Python chegou a 13 segundos de latência, e o Ruby a 7,9 segundos.
+** Com Cache: A ativação do cache reduz o tempo de resposta para a faixa de 5 a 8 milissegundos.
+** Nivelamento Tecnológico: Com o cache ativo, a diferença de velocidade entre Python e Ruby desaparece. A arquitetura supera a linguagem. (Nota: Eixo Y em escala logarítmica para ilustrar o ganho extremo).
 
 **Tempo de Resposta P95 (Escala Logarítmica)**
-![Comparativo P95](graficos%20gerados/grafico%20geral/desempenho_geral.png)  
+![Comparativo P95](graficos%20gerados/grafico%20geral/desempenho_geral.png) 
+
+** Python (Sem Cache): O Flask sofreu com o esgotamento de conexões e bloqueios externos, atingindo 2% de taxa de erro com 210 usuários.
+** Ruby (Sem Cache): O servidor do Ruby sofreu com o esgotamento de conexões e bloqueios externos, atingindo 5% de taxa.
+** O "Escudo" do Cache: Nos cenários com Redis, a taxa de erros foi em 0%. O cache protege a aplicação contra timeouts e bloqueios (anti-bots) dos sites acessados.
 
 **Taxa de Erros**
 ![Taxa de Erros](graficos%20gerados/grafico%20geral/falha_geral.png)
