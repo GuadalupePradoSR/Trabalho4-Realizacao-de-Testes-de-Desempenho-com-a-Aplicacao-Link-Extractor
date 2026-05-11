@@ -1,4 +1,4 @@
-# Trabalho 4: Testes de Desempenho - Link Extractor 🚀
+# Trabalho 4: Testes de Desempenho - Link Extractor
 
 **Disciplina:** Computação Distribuída  
 **Professor:** Nabor Mendonça  
@@ -9,17 +9,17 @@
 
 ---
 
-## 📌 Objetivo do Projeto
+## Objetivo do Projeto
 Este projeto tem como objetivo avaliar o comportamento e o desempenho de uma arquitetura de microsserviços (aplicação **Link Extractor**). Realizamos testes de carga variando a linguagem da API (Python e Ruby) e a utilização de uma camada de cache em memória (Redis), submetendo a aplicação a diferentes volumes de usuários virtuais simultâneos para identificar gargalos, limites físicos e ganhos de performance.
 
-## 🛠 Ferramentas Utilizadas
+## Ferramentas Utilizadas
 * **Docker e Docker Compose:** Orquestração dos microsserviços (Web App em PHP, API em Python/Ruby e Cache em Redis).
 * **Locust:** Ferramenta de teste de carga (Load Testing) para simular dezenas a milhares de usuários (Virtual Users - VUs).
 * **Python (Pandas & Matplotlib):** Utilizados para extração e plotagem dos dados comparativos a partir dos relatórios CSV gerados pelo Locust.
 
 ---
 
-## ⚙️ Metodologia e Configuração dos Testes
+## Metodologia e Configuração dos Testes
 
 ### Ferramenta de Teste de Carga e Comportamento do Usuário
 Foi utilizado o **Locust**, uma ferramenta de teste de carga baseada em Python, para simular o comportamento de usuários reais. O script de configuração (`locustfile.py`) define exatamente como cada usuário virtual (VU) age no sistema:
@@ -27,8 +27,7 @@ Foi utilizado o **Locust**, uma ferramenta de teste de carga baseada em Python, 
 * Durante o teste, cada usuário executa a tarefa principal iterando sobre uma lista pré-definida de 10 URLs. Para cada uma, é feita uma requisição `GET` para o endpoint da aplicação `/api/{url_alvo}` a fim de extrair seus links.
 * Abaixo está o trecho principal do script de configuração [**`locustfile.py`**](./codigo%20locust/locustfile.py) que define a rotina de cada usuário:
 
-```
-python
+```python
 from locust import HttpUser, task, between
 
 class ExtratorLinksVUser(HttpUser):
@@ -74,7 +73,7 @@ Os testes foram executados em cargas progressivas de 110, 170 e 210 usuários co
 
 ---
 
-## 📊 Cenários de Teste Avaliados e Gráficos
+## Cenários de Teste Avaliados e Gráficos
 
 Os testes foram estruturados em 4 cenários principais para isolar as variáveis de "Linguagem de Programação" e "Uso de Memória Cache". Abaixo, descrevemos cada cenário com seus respectivos gráficos de **Desempenho** (Tempo em ms do percentil P95) e **Confiabilidade** (Taxa de Erro %):
 
@@ -98,9 +97,7 @@ Cenário otimizado em Ruby. Servindo o conteúdo diretamente do Redis para verif
 ![Desempenho Ruby Com Cache](graficos%20gerados/grafico%20cenarios/ruby%20com%20cache/grafico_desempenho_ruby_com_cache.png)
 ![Erro Ruby Com Cache](graficos%20gerados/grafico%20cenarios/ruby%20com%20cache/grafico_erro_ruby_com_cache.png)
 
----
-
-## 🛠️ Modificação do Código Original (Cenário: Ruby SEM Cache)
+## Modificação do Código Original (Cenário: Ruby SEM Cache)
 Para garantir a rigorosidade e a veracidade arquitetural do cenário **API em Ruby (Sinatra) SEM Cache**, foi necessário realizar modificações diretas no código-fonte do repositório base fornecido em [ibnesayeed/linkextractor](https://github.com/ibnesayeed/linkextractor) (especificamente os arquivos da pasta `step6`).
 
 Por padrão, a versão Ruby do Link Extractor implementa a conexão obrigatória com o Redis. Para desativar o cache de forma efetiva e forçar a API a realizar a raspagem (scraping) na internet em 100% das requisições, as seguintes alterações foram aplicadas:
@@ -130,10 +127,33 @@ get "/api/*" do
   body jsonlinks
 end
 ```
+### 2. Remoção do Contêiner (docker-compose.yml)
+Para evitar que o serviço do banco de dados continuasse rodando "fantasma" consumindo memória RAM do ambiente de testes, o contêiner do Redis e a variável de ambiente REDIS_URL foram comentados na orquestração do Docker.
+``` ruby
+version: '3'
+
+services:
+  api:
+    image: linkextractor-api:step6-ruby
+    build: ./api
+    ports:
+      - "4567:4567"
+    # Variável removida para isolar a API:
+    # environment:
+    #  - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./logs:/app/logs
+  web:
+    # ... configurações da web ...
+    
+# Serviço do banco de dados inativado:
+#  redis:
+#    image: redis
+```
 
 ---
 
-### 📈 Comparativo Geral
+### Comparativo Geral
 Além das visualizações por cenário, compilamos as informações gerais nos gráficos abaixo. Note que devido à alta discrepância entre as linguagens sem cache vs com cache, o gráfico de tempo de resposta possui **escala logarítmica**.
 
 **Tempo de Resposta P95 (Escala Logarítmica)**
@@ -144,25 +164,22 @@ Além das visualizações por cenário, compilamos as informações gerais nos g
 
 ---
 
-## 🧠 Conclusões e Descobertas
+## Conclusões e Descobertas
 
 1. **A Arquitetura Supera a Linguagem:**
    A inserção do Redis igualou o desempenho de ambas as linguagens. No cenário COM cache, a diferença de velocidade entre usar Python ou Ruby tornou-se praticamente nula (estabilizando entre 5 e 8 milissegundos). Isso prova que otimizações de arquitetura de software costumam trazer ganhos superiores à simples troca da linguagem de programação.
 
 2. **O Verdadeiro Gargalo é a Rede (I/O Bound):**
-   Nos cenários SEM Cache, ficou claro que a aplicação não estava limitada pelo poder de processamento interno, mas sim pela latência da internet e pelas restrições de terceiros (firewalls e bloqueios dos sites alvo). Para 210 usuários, o Python sem cache demorou cerca de **13.000 ms (13 segundos)** para responder.
+   Nos cenários SEM Cache, ficou claro que a aplicação não estava limitada pelo poder de processamento interno, mas sim pela latência da internet e pelas restrições de terceiros (firewalls e bloqueios dos sites alvo). Para 210 usuários, o Python sem cache demorou cerca de **13.000 ms (13 segundos)** para responder e o Ruby sem cache demorou cerca de **7.900 ms (7 segundos)** para responder.
 
-3. **Resiliência sob Estresse (Ruby vs Python):**
-   Quando forçados a lidar com a lentidão da rede externa (cenário sem cache), o servidor Ruby (Sinatra) demonstrou maior eficiência na gestão das conexões simultâneas. Sob a carga de 210 usuários, o Ruby entregou os dados em cerca de **4.600 ms mantendo a estabilidade**, enquanto o Python apresentou fadiga de conexões, atingindo **2% de falha** na carga máxima.
-
-4. **O Cache como "Escudo de Confiabilidade":**
+3. **O Cache como "Escudo de Confiabilidade":**
    Mais do que apenas velocidade, o Redis funcionou como um escudo protetor. Ele isolou os microsserviços da instabilidade da internet, evitou a fadiga de conexões e garantiu uma **taxa de 0% de erros** em todos os cenários, independentemente da carga de usuários.
 
 ---
 
-## ⚠️ Observações e Problemas Registrados
+## Observações e Problemas Registrados
 Durante a fase de bateria de testes de estresse para definir as URLs alvos, registramos os seguintes fenômenos reais do comportamento de redes:
-* **Bloqueio por Firewalls (Anti-Bot):** Sites como `g1.globo.com`, `www.debian.org` e `nytimes.com` bloquearam as requisições (Erro 500 / SSLEOFError) quando a carga passou de dezenas de usuários, provando a eficácia de sistemas Cloudflare/Anti-DDoS comerciais.
+* **Bloqueio por Firewalls (Anti-Bot):** Sites como `www.debian.org` e `nytimes.com` bloquearam as requisições (Erro 500 / SSLEOFError) quando a carga passou de dezenas de usuários, provando a eficácia de sistemas Cloudflare/Anti-DDoS comerciais.
 * **Erro OOM (Out Of Memory - Erro 137):** Durante testes com a URL `https://html.spec.whatwg.org/` (que continha absurdos 64.913 links), o container Docker da API Python excedeu o limite de Memória RAM alocado no sistema operacional e foi encerrado de forma abrupta ("Killed") pelo sistema. As URLs finais do teste foram ajustadas para páginas com volumes suportáveis pelo hardware local.
 
 ---
