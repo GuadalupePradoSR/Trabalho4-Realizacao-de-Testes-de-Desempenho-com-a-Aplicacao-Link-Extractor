@@ -51,7 +51,7 @@ class ExtratorLinksVUser(HttpUser):
 
         # Itera sobre as URLs enviando-as para a nossa API
         for url in urls_alvo:
-            self.client.get(f"/api/{url}", name="/api/[url_alvo]")
+            self.client.get(f"/api/{url}", name="/api/[url_alvo]")```
 
 ### Justificativa e URLs Utilizadas
 As URLs foram escolhidas propositalmente com base na quantidade de links contidos em cada página, variando de conteúdos muito leves até páginas extremamente densas em hiperlinks. O uso dessa lista justifica-se para garantir variabilidade e estressar o processamento da aplicação com diferentes densidades de payload durante a mesma sessão de navegação de um usuário.
