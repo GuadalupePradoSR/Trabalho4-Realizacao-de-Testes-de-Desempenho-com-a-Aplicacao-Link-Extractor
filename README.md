@@ -79,19 +79,19 @@ Os testes foram estruturados em 4 cenários principais para isolar as variáveis
 
 ### 1. API em Python (Flask) SEM Cache
 Cenário onde a API em Python extrai os links "ao vivo" a cada requisição, sofrendo impacto direto da latência da rede e bloqueios.
-Comportamento das Barras: Apresenta um crescimento acentuado conforme a carga de usuários aumenta.
-Impacto da Carga Máxima: Aos 210 usuários simultâneos, o tempo de resposta (P95) atinge picos críticos de aproximadamente 13.000 milissegundos (13 segundos).
+* Comportamento das Barras: Apresenta um crescimento acentuado conforme a carga de usuários aumenta.
+* Impacto da Carga Máxima: Aos 210 usuários simultâneos, o tempo de resposta (P95) atinge picos críticos de aproximadamente 13.000 milissegundos (13 segundos).
 ![Desempenho Python Sem Cache](graficos%20gerados/grafico%20cenarios/py%20sem%20cache/grafico_desempenho_python_sem_cache.png)
 
-Revela o ponto de ruptura da aplicação. À medida que a carga sobe para 210 usuários, a taxa de erros cresce devido a bloqueios de anti-bot dos sites alvo e estouro de buffers de conexão.
+* Revela o ponto de ruptura da aplicação. À medida que a carga sobe para 210 usuários, a taxa de erros cresce devido a bloqueios de anti-bot dos sites alvo e estouro de buffers de conexão.
 ![Erro Python Sem Cache](graficos%20gerados/grafico%20cenarios/py%20sem%20cache/grafico_erro_python_sem_cache.png)
 
 ### 2. API em Python (Flask) COM Cache (Redis)
 Cenário onde o Redis foi ativado. As requisições são servidas em milissegundos direto da memória, sem depender do acesso externo contínuo.
-Impacto da Carga Máxima: O tempo de resposta despenca para a faixa de 5 a 8 milissegundos, mantendo-se estável mesmo com 210 usuários ativos.
+* Impacto da Carga Máxima: O tempo de resposta despenca para a faixa de 5 a 8 milissegundos, mantendo-se estável mesmo com 210 usuários ativos.
 ![Desempenho Python Com Cache](graficos%20gerados/grafico%20cenarios/py%20com%20cache/grafico_desempenho_python_com_cache.png)
 
-Mantém uma taxa de 0% de erro em todos os níveis de carga, provando que o cache protege a aplicação contra instabilidades externas.
+* Mantém uma taxa de 0% de erro em todos os níveis de carga, provando que o cache protege a aplicação contra instabilidades externas.
 ![Erro Python Com Cache](graficos%20gerados/grafico%20cenarios/py%20com%20cache/grafico_erro_python_com_cache.png)
 
 ### 3. API em Ruby (Sinatra) SEM Cache
