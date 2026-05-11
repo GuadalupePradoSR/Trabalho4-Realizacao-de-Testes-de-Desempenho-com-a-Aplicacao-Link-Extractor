@@ -79,7 +79,7 @@ Além das visualizações por cenário, compilamos as informações gerais nos g
 
 ## Conclusões e Descobertas
 
-1. **O Gargalo da Internet vs. O Triunfo do Cache:**
+1. **A Internet vs. O Cache:**
    No cenário SEM Cache, a aplicação é refém da latência da rede externa e de firewalls de terceiros. Para 210 usuários, o Python sem cache demorou cerca de **13.000 ms (13 segundos)** para responder, registrando falhas por bloqueio de servidores externos. 
    Ao introduzir o **Redis (COM Cache)**, a resposta caiu para assombrosos **5 a 8 milissegundos**, com **0% de falha**. O cache atuou como um escudo, eliminando a dependência da rede externa e servindo os dados diretamente da memória RAM.
 
