@@ -25,6 +25,33 @@ Este projeto tem como objetivo avaliar o comportamento e o desempenho de uma arq
 Foi utilizado o **Locust**, uma ferramenta de teste de carga baseada em Python, para simular o comportamento de usuários reais. O script de configuração (`locustfile.py`) define exatamente como cada usuário virtual (VU) age no sistema:
 * Cada usuário aguarda um tempo aleatório entre 1 e 3 segundos (`wait_time = between(1, 3)`) antes de fazer uma nova requisição, simulando o tempo de leitura de um humano.
 * Durante o teste, cada usuário executa a tarefa principal iterando sobre uma lista pré-definida de 10 URLs. Para cada uma, é feita uma requisição `GET` para o endpoint da aplicação `/api/{url_alvo}` a fim de extrair seus links.
+* Abaixo está o trecho principal do script de configuração [**`locustfile.py`**](./codigo%20locust/locustfile.py) que define a rotina de cada usuário:
+
+```python
+from locust import HttpUser, task, between
+
+class ExtratorLinksVUser(HttpUser):
+    # Simula o tempo de "pensamento" do usuário entre ações
+    wait_time = between(1, 3)
+
+    @task
+    def sequencia_dez_invocacoes(self):
+        urls_alvo = [
+            "[https://www.bbc.com/](https://www.bbc.com/)",
+            "[https://g1.globo.com/](https://g1.globo.com/)", 
+            "[https://edition.cnn.com/](https://edition.cnn.com/)", 
+            "[https://books.toscrape.com/](https://books.toscrape.com/)",
+            "[https://crawler-test.com/](https://crawler-test.com/)", 
+            "[https://quotes.toscrape.com/](https://quotes.toscrape.com/)", 
+            "[https://www.php.net/manual/pt_BR/](https://www.php.net/manual/pt_BR/)",
+            "[https://github.com/explore](https://github.com/explore)", 
+            "[https://www.w3schools.com/tags/default.asp](https://www.w3schools.com/tags/default.asp)", 
+            "[https://developer.mozilla.org/en-US/](https://developer.mozilla.org/en-US/)" 
+        ]
+
+        # Itera sobre as URLs enviando-as para a nossa API
+        for url in urls_alvo:
+            self.client.get(f"/api/{url}", name="/api/[url_alvo]")
 
 ### Justificativa e URLs Utilizadas
 As URLs foram escolhidas propositalmente com base na quantidade de links contidos em cada página, variando de conteúdos muito leves até páginas extremamente densas em hiperlinks. O uso dessa lista justifica-se para garantir variabilidade e estressar o processamento da aplicação com diferentes densidades de payload durante a mesma sessão de navegação de um usuário.
