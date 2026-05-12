@@ -23,7 +23,7 @@ Este projeto tem como objetivo avaliar o comportamento e o desempenho de uma arq
 
 ### Ferramenta de Teste de Carga e Comportamento do Usuário
 Foi utilizado o **Locust**, uma ferramenta de teste de carga baseada em Python, para simular o comportamento de usuários reais. O script de configuração (`locustfile.py`) define exatamente como cada usuário virtual (VU) age no sistema:
-* Cada usuário aguarda um tempo aleatório entre 1 e 3 segundos (`wait_time = between(1, 3)`) antes de fazer uma nova requisição, simulando o tempo de leitura de um humano.
+* Cada usuário aguarda um tempo aleatório entre 1 e 3 segundos (`wait_time = between(1, 3)`) antes de fazer uma nova requisição.
 * Durante o teste, cada usuário executa a tarefa principal iterando sobre uma lista pré-definida de 10 URLs. Para cada uma, é feita uma requisição `GET` para o endpoint da aplicação `/api/{url_alvo}` a fim de extrair seus links.
 * Abaixo está o trecho principal do script de configuração [**`locustfile.py`**](./codigo%20locust/locustfile.py) que define a rotina de cada usuário:
 
