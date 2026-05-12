@@ -55,7 +55,7 @@ class ExtratorLinksVUser(HttpUser):
 ```
 
 ### Justificativa e URLs Utilizadas
-As URLs foram escolhidas propositalmente com base na quantidade de links contidos em cada página, variando de conteúdos muito leves até páginas extremamente densas em hiperlinks. O uso dessa lista justifica-se para garantir variabilidade e estressar o processamento da aplicação com diferentes densidades de payload durante a mesma sessão de navegação de um usuário.
+As URLs foram escolhidas propositalmente com base na quantidade de links contidos em cada página, variando de conteúdos leves até páginas extremamente densas em hiperlinks. O uso dessa lista justifica-se para garantir variabilidade e estressar o processamento da aplicação com diferentes densidades de payload durante a mesma sessão de navegação de um usuário.
 
 As URLs alvos configuradas e seus respectivos tamanhos de links foram:
 * `https://quotes.toscrape.com/` -> 55 links
